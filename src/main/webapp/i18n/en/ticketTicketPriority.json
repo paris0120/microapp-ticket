@@ -1,0 +1,27 @@
+{
+  "ticketApp": {
+    "ticketTicketPriority": {
+      "home": {
+        "title": "Ticket Priorities",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Ticket Priority",
+        "createOrEditLabel": "Create or edit a Ticket Priority",
+        "notFound": "No Ticket Priorities found"
+      },
+      "created": "A new Ticket Priority is created with identifier {{ param }}",
+      "updated": "A Ticket Priority is updated with identifier {{ param }}",
+      "deleted": "A Ticket Priority is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Ticket Priority {{ id }}?"
+      },
+      "detail": {
+        "title": "Ticket Priority"
+      },
+      "id": "ID",
+      "priorityLevel": "Priority Level",
+      "priority": "Priority",
+      "color": "Color",
+      "icon": "Icon"
+    }
+  }
+}
