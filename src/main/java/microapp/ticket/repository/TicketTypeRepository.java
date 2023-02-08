@@ -21,6 +21,8 @@ public interface TicketTypeRepository extends ReactiveCrudRepository<TicketType,
     @Override
     Flux<TicketType> findAll();
 
+    Flux<TicketType> findAllByOrderByWeightAsc();
+
     @Override
     Mono<TicketType> findById(Long id);
 

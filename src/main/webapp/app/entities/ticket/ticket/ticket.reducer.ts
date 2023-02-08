@@ -39,10 +39,8 @@ export const createEntity = createAsyncThunk(
     entity.created = '0';
     entity.modified = '0';
     entity.updated = '0';
-    entity.typeKey = 'OPEN';
     entity.workflowStatusKey = 'OPEN';
     entity.totalComments = 0;
-    entity.typeKey = 'OPEN';
     entity.userDisplayName = '';
     entity.priorityLevel = 0;
     const result = await axios.post<ITicket>(apiUrl, cleanEntity(entity));
@@ -55,6 +53,9 @@ export const createEntity = createAsyncThunk(
 export const updateEntity = createAsyncThunk(
   'ticket/update_entity',
   async (entity: ITicket, thunkAPI) => {
+    entity.created = '0';
+    entity.modified = '0';
+    entity.updated = '0';
     const result = await axios.put<ITicket>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
     thunkAPI.dispatch(getEntities({}));
     return result;

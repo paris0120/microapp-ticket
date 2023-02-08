@@ -1,9 +1,9 @@
 id;microapp_key;type;weight;color;icon;description;is_active;created;modified;archived
-1;INQUIRY;Inquiry;1;green;circle-info;../fake-data/blob/hipster.txt;true;2023-02-06T23:20:54;2023-02-06T19:37:48;2023-02-07T04:03:22
+1;INQUIRY;Inquiry;1;green;info;../fake-data/blob/hipster.txt;true;2023-02-06T23:20:54;2023-02-06T19:37:48;2023-02-07T04:03:22
 2;ISSUE;Issue Report;2;red;bug;../fake-data/blob/hipster.txt;true;2023-02-06T23:20:54;2023-02-06T19:37:48;2023-02-07T04:03:22
 3;FEATURE;Feature Request;3;green;wand-magic-sparkles;../fake-data/blob/hipster.txt;true;2023-02-06T23:20:54;2023-02-06T19:37:48;2023-02-07T04:03:22
 4;SUPPORT;Support Question;4;green;truck-medical;../fake-data/blob/hipster.txt;true;2023-02-06T23:20:54;2023-02-06T19:37:48;2023-02-07T04:03:22
 5;SECURITY;Security Vulnerability;5;red;shield-halved;../fake-data/blob/hipster.txt;true;2023-02-06T23:20:54;2023-02-06T19:37:48;2023-02-07T04:03:22
 6;BILLING;Billing Issues;6;red;dollar-sign;../fake-data/blob/hipster.txt;true;2023-02-06T23:20:54;2023-02-06T19:37:48;2023-02-07T04:03:22
-7;OTHER;Other;7;green;messages-question;../fake-data/blob/hipster.txt;true;2023-02-06T23:20:54;2023-02-06T19:37:48;2023-02-07T04:03:22
-8;TEST;test;7;green;messages-question;../fake-data/blob/hipster.txt;true;2023-02-06T23:20:54;2023-02-06T19:37:48;2023-02-07T04:03:22
+7;OTHER;Other Questions;7;green;question;../fake-data/blob/hipster.txt;true;2023-02-06T23:20:54;2023-02-06T19:37:48;2023-02-07T04:03:22
+8;TEST;test;7;green;question;../fake-data/blob/hipster.txt;false;2023-02-06T23:20:54;2023-02-06T19:37:48;2023-02-07T04:03:22

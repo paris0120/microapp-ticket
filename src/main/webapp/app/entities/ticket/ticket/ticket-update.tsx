@@ -11,8 +11,12 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { ITicket } from 'app/shared/model/ticket/ticket.model';
 import { getEntity, updateEntity, createEntity, reset } from './ticket.reducer';
 
-import { Button, Form, FormInstance, Input, Select, Space, Tooltip, Typography } from 'antd';
+import { Button, Form, FormInstance, Input, List, Select, Space, Tooltip, Typography } from 'antd';
 import { Col, Row } from 'antd';
+import { getEntities } from 'app/entities/ticket/ticket-type/ticket-type.reducer';
+import { ITicketType } from 'app/shared/model/ticket/ticket-type.model';
+import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro';
+import { IconName } from '@fortawesome/fontawesome-common-types'; // <-- import styles to be used
 
 export const TicketUpdate = () => {
   const dispatch = useAppDispatch();
@@ -26,25 +30,38 @@ export const TicketUpdate = () => {
   const loading = useAppSelector(state => state.ticket.ticket.loading);
   const updating = useAppSelector(state => state.ticket.ticket.updating);
   const updateSuccess = useAppSelector(state => state.ticket.ticket.updateSuccess);
-
+  const ticketTypeList = useAppSelector(state => state.ticket.ticketType.entities);
+  const [ticketTypes, setTicketTypes] = useState(null);
   const handleClose = () => {
     ``;
     navigate('/ticket/ticket' + location.search);
   };
-
   useEffect(() => {
+    dispatch(getEntities({}));
     if (isNew) {
       dispatch(reset());
     } else {
       dispatch(getEntity(id));
     }
   }, []);
-
   useEffect(() => {
     if (updateSuccess) {
       handleClose();
     }
   }, [updateSuccess]);
+
+  useEffect(() => {
+    if (updateSuccess) {
+      handleClose();
+    }
+  }, [location.search]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setTypeState(isNew ? params.get('type') : ticketEntity.typeKey);
+  }, [location.search]);
+
+  const [typeState, setTypeState] = useState(isNew ? new URLSearchParams(location.search).get('type') : ticketEntity.typeKey);
   const saveEntity = values => {
     console.log(values);
     values.created = 0;
@@ -52,7 +69,7 @@ export const TicketUpdate = () => {
     values.updated = convertDateTimeToServer(values.updated);
     values.closed = convertDateTimeToServer(values.closed);
     values.archived = convertDateTimeToServer(values.archived);
-
+    values.typeKey = isNew ? typeState : ticketEntity.typeKey;
     const entity = {
       ...ticketEntity,
       ...values,
@@ -82,271 +99,80 @@ export const TicketUpdate = () => {
           closed: convertDateTimeFromServer(ticketEntity.closed),
           archived: convertDateTimeFromServer(ticketEntity.archived),
         };
-
   return (
     <div>
-      <Row className="justify-content-center">
-        <Col md="8">
-          <h2 id="ticketApp.ticketTicket.home.createOrEditLabel" data-cy="TicketCreateUpdateHeading">
-            <Translate contentKey="ticketApp.ticketTicket.home.createOrEditLabel">Create or edit a Ticket</Translate>
-          </h2>
-        </Col>
-      </Row>
-      <Row className="justify-content-center">
-        <Col md="8">
-          {loading ? (
-            <p>Loading...</p>
-          ) : (
-            <Form defaultValue={defaultValues()} onFinish={saveEntity} style={{ maxWidth: 800 }}>
-              {!isNew ? (
-                <ValidatedField
-                  name="id"
-                  required
-                  readOnly
-                  id="ticket-id"
-                  label={translate('global.field.id')}
-                  validate={{ required: true }}
-                />
-              ) : null}
+      {typeState || isNew == false ? (
+        <>
+          <Row className="justify-content-center">
+            <Col span={24}>
+              <h2 id="ticketApp.ticketTicket.home.createOrEditLabel" data-cy="TicketCreateUpdateHeading">
+                <Translate contentKey="ticketApp.ticketTicket.home.createOrEditLabel">Create or edit a Ticket</Translate>
+              </h2>
+            </Col>
+          </Row>
+          <Row className="justify-content-center">
+            <Col span={24}>
+              {loading ? (
+                <p>Loading...</p>
+              ) : (
+                <Form initialValues={defaultValues()} onFinish={saveEntity}>
+                  <Form.Item
+                    id="ticket-title"
+                    name="title"
+                    data-cy="title"
+                    rules={[
+                      { required: true, message: translate('entity.validation.required') },
+                      { min: 2, message: translate('entity.validation.minlength', { min: 2 }) },
+                    ]}
+                  >
+                    <Input placeholder={translate('ticketApp.ticketTicket.title')} />
+                  </Form.Item>
+                  <Form.Item
+                    id="ticket-content"
+                    name="content"
+                    data-cy="content"
+                    rules={[{ required: true, message: translate('entity.validation.required') }]}
+                  >
+                    <Input.TextArea style={{ height: 400 }} placeholder={translate('ticketApp.ticketTicket.content')} />
+                  </Form.Item>
 
-              <Form.Item
-                id="ticket-title"
-                name="title"
-                data-cy="title"
-                rules={[
-                  { required: true, message: translate('entity.validation.required') },
-                  { min: 2, message: translate('entity.validation.minlength', { min: 2 }) },
-                ]}
-              >
-                <Input style={{ width: 600 }} placeholder={translate('ticketApp.ticketTicket.title')} />
-              </Form.Item>
-              <Form.Item
-                id="ticket-content"
-                name="content"
-                data-cy="content"
-                rules={[{ required: true, message: translate('entity.validation.required') }]}
-              >
-                <Input.TextArea style={{ width: 600, height: 400 }} placeholder={translate('ticketApp.ticketTicket.content')} />
-              </Form.Item>
+                  <Form.Item>
+                    <Button type="link" id="cancel-save" data-cy="entityCreateCancelButton" href="/ticket/ticket" color="info">
+                      <FontAwesomeIcon icon="arrow-left" />
+                      &nbsp;
+                      <Translate contentKey="entity.action.back">Back</Translate>
+                    </Button>
 
-              <Form.Item>
-                <Button type="link" id="cancel-save" data-cy="entityCreateCancelButton" href="/ticket/ticket" color="info">
-                  <FontAwesomeIcon icon="arrow-left" />
-                  &nbsp;
-                  <Translate contentKey="entity.action.back">Back</Translate>
-                </Button>
-
-                <Button type="primary" htmlType="submit">
-                  <FontAwesomeIcon icon="save" />
-                  &nbsp;
-                  <Translate contentKey="entity.action.save">Save</Translate>
-                </Button>
-              </Form.Item>
-
-              {/*<Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/ticket/ticket" replace color="info">*/}
-              {/*  <FontAwesomeIcon icon="arrow-left" />*/}
-              {/*  &nbsp;*/}
-              {/*  <span className="d-none d-md-inline">*/}
-              {/*    <Translate contentKey="entity.action.back">Back</Translate>*/}
-              {/*  </span>*/}
-              {/*</Button>*/}
-              {/*&nbsp;*/}
-              {/*<Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>*/}
-              {/*  <FontAwesomeIcon icon="save" />*/}
-              {/*  &nbsp;*/}
-              {/*  <Translate contentKey="entity.action.save">Save</Translate>*/}
-              {/*</Button>*/}
-
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.content')}*/}
-              {/*  id="ticket-content"*/}
-              {/*  name="content"*/}
-              {/*  data-cy="content"*/}
-              {/*  type="textarea"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*  }}*/}
-              {/*/>*/}
-
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.content')}*/}
-              {/*  id="ticket-content"*/}
-              {/*  name="content"*/}
-              {/*  data-cy="content"*/}
-              {/*  type="textarea"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*  }}*/}
-              {/*/>*/}
-
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.username')}*/}
-              {/*  id="ticket-username"*/}
-              {/*  name="username"*/}
-              {/*  data-cy="username"*/}
-              {/*  type="text"*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.userFirstName')}*/}
-              {/*  id="ticket-userFirstName"*/}
-              {/*  name="userFirstName"*/}
-              {/*  data-cy="userFirstName"*/}
-              {/*  type="text"*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.userLastName')}*/}
-              {/*  id="ticket-userLastName"*/}
-              {/*  name="userLastName"*/}
-              {/*  data-cy="userLastName"*/}
-              {/*  type="text"*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.userDisplayName')}*/}
-              {/*  id="ticket-userDisplayName"*/}
-              {/*  name="userDisplayName"*/}
-              {/*  data-cy="userDisplayName"*/}
-              {/*  type="text"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*  }}*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.title')}*/}
-              {/*  id="ticket-title"*/}
-              {/*  name="title"*/}
-              {/*  data-cy="title"*/}
-              {/*  type="text"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*    minLength: { value: 2, message: translate('entity.validation.minlength', { min: 2 }) },*/}
-              {/*  }}*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.content')}*/}
-              {/*  id="ticket-content"*/}
-              {/*  name="content"*/}
-              {/*  data-cy="content"*/}
-              {/*  type="textarea"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*  }}*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.typeKey')}*/}
-              {/*  id="ticket-typeKey"*/}
-              {/*  name="typeKey"*/}
-              {/*  data-cy="typeKey"*/}
-              {/*  type="text"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*  }}*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.workflowStatusKey')}*/}
-              {/*  id="ticket-workflowStatusKey"*/}
-              {/*  name="workflowStatusKey"*/}
-              {/*  data-cy="workflowStatusKey"*/}
-              {/*  type="text"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*  }}*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.priorityLevel')}*/}
-              {/*  id="ticket-priorityLevel"*/}
-              {/*  name="priorityLevel"*/}
-              {/*  data-cy="priorityLevel"*/}
-              {/*  type="text"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*    validate: v => isNumber(v) || translate('entity.validation.number'),*/}
-              {/*  }}*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.tags')}*/}
-              {/*  id="ticket-tags"*/}
-              {/*  name="tags"*/}
-              {/*  data-cy="tags"*/}
-              {/*  type="textarea"*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.totalComments')}*/}
-              {/*  id="ticket-totalComments"*/}
-              {/*  name="totalComments"*/}
-              {/*  data-cy="totalComments"*/}
-              {/*  type="text"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*    validate: v => isNumber(v) || translate('entity.validation.number'),*/}
-              {/*  }}*/}
-              {/*/>*/}
-              {/*<ValidatedField label={translate('ticketApp.ticketTicket.uuid')} id="ticket-uuid" name="uuid" data-cy="uuid" type="text" />*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.created')}*/}
-              {/*  id="ticket-created"*/}
-              {/*  name="created"*/}
-              {/*  data-cy="created"*/}
-              {/*  type="datetime-local"*/}
-              {/*  placeholder="YYYY-MM-DD HH:mm"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*  }}*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.modified')}*/}
-              {/*  id="ticket-modified"*/}
-              {/*  name="modified"*/}
-              {/*  data-cy="modified"*/}
-              {/*  type="datetime-local"*/}
-              {/*  placeholder="YYYY-MM-DD HH:mm"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*  }}*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.updated')}*/}
-              {/*  id="ticket-updated"*/}
-              {/*  name="updated"*/}
-              {/*  data-cy="updated"*/}
-              {/*  type="datetime-local"*/}
-              {/*  placeholder="YYYY-MM-DD HH:mm"*/}
-              {/*  validate={{*/}
-              {/*    required: { value: true, message: translate('entity.validation.required') },*/}
-              {/*  }}*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.closed')}*/}
-              {/*  id="ticket-closed"*/}
-              {/*  name="closed"*/}
-              {/*  data-cy="closed"*/}
-              {/*  type="datetime-local"*/}
-              {/*  placeholder="YYYY-MM-DD HH:mm"*/}
-              {/*/>*/}
-              {/*<ValidatedField*/}
-              {/*  label={translate('ticketApp.ticketTicket.archived')}*/}
-              {/*  id="ticket-archived"*/}
-              {/*  name="archived"*/}
-              {/*  data-cy="archived"*/}
-              {/*  type="datetime-local"*/}
-              {/*  placeholder="YYYY-MM-DD HH:mm"*/}
-              {/*/>*/}
-              {/*<Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/ticket/ticket" replace color="info">*/}
-              {/*  <FontAwesomeIcon icon="arrow-left" />*/}
-              {/*  &nbsp;*/}
-              {/*  <span className="d-none d-md-inline">*/}
-              {/*    <Translate contentKey="entity.action.back">Back</Translate>*/}
-              {/*  </span>*/}
-              {/*</Button>*/}
-              {/*&nbsp;*/}
-              {/*<Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>*/}
-              {/*  <FontAwesomeIcon icon="save" />*/}
-              {/*  &nbsp;*/}
-              {/*  <Translate contentKey="entity.action.save">Save</Translate>*/}
-              {/*</Button>*/}
-            </Form>
-          )}
-        </Col>
-      </Row>
+                    <Button type="primary" htmlType="submit">
+                      <FontAwesomeIcon icon="save" />
+                      &nbsp;
+                      <Translate contentKey="entity.action.save">Save</Translate>
+                    </Button>
+                  </Form.Item>
+                </Form>
+              )}
+            </Col>
+          </Row>
+        </>
+      ) : (
+        <Row>
+          <Col span={24}>
+            <List
+              itemLayout="horizontal"
+              dataSource={ticketTypeList.filter(type => type.isActive == true)}
+              renderItem={(item: ITicketType) => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={<FontAwesomeIcon icon={item.icon as IconName} width={30} />}
+                    title={<a href={'/ticket/ticket/new?type=' + item.key}>{item.type}</a>}
+                    description={item.description}
+                  />
+                </List.Item>
+              )}
+            />
+          </Col>
+        </Row>
+      )}
     </div>
   );
 };

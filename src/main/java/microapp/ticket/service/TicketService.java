@@ -1,12 +1,20 @@
 package microapp.ticket.service;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.UUID;
+import javax.annotation.PostConstruct;
 import microapp.ticket.domain.Ticket;
+import microapp.ticket.repository.TicketPriorityRepository;
 import microapp.ticket.repository.TicketRepository;
+import microapp.ticket.repository.TicketTypeRepository;
 import microapp.ticket.security.SecurityUtils;
 import microapp.ticket.service.dto.TicketDTO;
+import microapp.ticket.service.dto.TicketPriorityDTO;
+import microapp.ticket.service.dto.TicketTypeDTO;
 import microapp.ticket.service.mapper.TicketMapper;
+import microapp.ticket.service.mapper.TicketPriorityMapper;
+import microapp.ticket.service.mapper.TicketTypeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -28,9 +36,49 @@ public class TicketService {
 
     private final TicketMapper ticketMapper;
 
-    public TicketService(TicketRepository ticketRepository, TicketMapper ticketMapper) {
+    private final TicketTypeRepository ticketTypeRepository;
+    private final TicketTypeMapper ticketTypeMapper;
+
+    private final TicketPriorityRepository ticketPriorityRepository;
+
+    private final TicketPriorityMapper ticketPriorityMapper;
+    private HashMap<String, TicketTypeDTO> ticketTypes = null;
+    private HashMap<Integer, TicketPriorityDTO> priorities = null;
+
+    public TicketService(
+        TicketRepository ticketRepository,
+        TicketMapper ticketMapper,
+        TicketTypeRepository ticketTypeRepository,
+        TicketTypeMapper ticketTypeMapper,
+        TicketPriorityRepository ticketPriorityRepository,
+        TicketPriorityMapper ticketPriorityMapper
+    ) {
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
+        this.ticketTypeRepository = ticketTypeRepository;
+        this.ticketTypeMapper = ticketTypeMapper;
+        this.ticketPriorityRepository = ticketPriorityRepository;
+        this.ticketPriorityMapper = ticketPriorityMapper;
+    }
+
+    public void refreshTicketTypes() {
+        ticketTypes = new HashMap<>();
+        ticketTypeRepository
+            .findAll()
+            .map(ticketTypeMapper::toDto)
+            .subscribe(type -> {
+                ticketTypes.put(type.getKey(), type);
+            });
+    }
+
+    public void refreshPriorities() {
+        priorities = new HashMap<>();
+        ticketPriorityRepository
+            .findAll()
+            .map(ticketPriorityMapper::toDto)
+            .subscribe(priority -> {
+                priorities.put(priority.getPriorityLevel(), priority);
+            });
     }
 
     /**
@@ -127,6 +175,12 @@ public class TicketService {
             .map(ticketMapper::toDto);
     }
 
+    private TicketDTO addObject(TicketDTO ticketDTO) {
+        ticketDTO.setTicketType(this.ticketTypes.get(ticketDTO.getTypeKey()));
+        ticketDTO.setTicketPriority(this.priorities.get(ticketDTO.getPriorityLevel()));
+        return ticketDTO;
+    }
+
     /**
      * Get all the tickets.
      *
@@ -135,12 +189,17 @@ public class TicketService {
      */
     @Transactional(readOnly = true)
     public Flux<TicketDTO> findAllMy(String status, Pageable pageable) {
+        if (ticketTypes == null) refreshTicketTypes();
+        if (priorities == null) refreshPriorities();
         if (status.equalsIgnoreCase("open")) {
             log.debug("Request to get all open Tickets");
             return SecurityUtils
                 .getCurrentUserLogin()
                 .flatMapMany(username -> {
-                    return ticketRepository.findAllByUsernameAndClosedIs(username, null, pageable).map(ticketMapper::toDto);
+                    return ticketRepository
+                        .findAllByUsernameAndClosedIs(username, null, pageable)
+                        .map(ticketMapper::toDto)
+                        .map(this::addObject);
                 });
         } else {
             log.debug("Request to get all closed Tickets");

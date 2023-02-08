@@ -21,6 +21,8 @@ public interface TicketPriorityRepository extends ReactiveCrudRepository<TicketP
     @Override
     Flux<TicketPriority> findAll();
 
+    Flux<TicketPriority> findAllByOrderByPriorityLevelDesc();
+
     @Override
     Mono<TicketPriority> findById(Long id);
 

@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import { ITicketPriority } from 'app/shared/model/ticket/ticket-priority.model';
+import { ITicketType } from 'app/shared/model/ticket/ticket-type.model';
 
 export interface ITicket {
   id?: number;
@@ -19,6 +21,10 @@ export interface ITicket {
   updated?: string;
   closed?: string | null;
   archived?: string | null;
+
+  ticketPriority?: ITicketPriority;
+
+  ticketType?: ITicketType;
 }
 
 export const defaultValue: Readonly<ITicket> = {};

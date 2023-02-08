@@ -11,13 +11,29 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { ITicket } from 'app/shared/model/ticket/ticket.model';
 import { getEntities } from './ticket.reducer';
-import { Avatar, Button, Col, Dropdown, List, MenuProps, Pagination, Radio, Row, Space, Table, TablePaginationConfig, Tag } from 'antd';
+import {
+  Avatar,
+  Button,
+  Col,
+  Dropdown,
+  List,
+  MenuProps,
+  Pagination,
+  Radio,
+  Row,
+  Space,
+  Table,
+  TablePaginationConfig,
+  Tag,
+  Typography,
+} from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table';
 import { data } from 'autoprefixer';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { convertDateTimeToServer } from 'app/shared/util/date-utils';
+import { IconName } from '@fortawesome/fontawesome-common-types';
 
 const items: MenuProps['items'] = [
   {
@@ -29,12 +45,13 @@ const items: MenuProps['items'] = [
     key: 'oldest',
   },
 ];
+
 export const Ticket = () => {
   const dispatch = useAppDispatch();
 
   const location = useLocation();
   const navigate = useNavigate();
-
+  const { Text, Link } = Typography;
   const onSortBy = e => {
     switch (e.key) {
       case 'newest':
@@ -115,6 +132,7 @@ export const Ticket = () => {
   const handleSyncList = () => {
     sortEntities();
   };
+  console.log(ticketList);
 
   const timeAgo = new TimeAgo('en-US');
   return (
@@ -160,10 +178,22 @@ export const Ticket = () => {
                   renderItem={(item: ITicket) => (
                     <List.Item>
                       <List.Item.Meta
-                        avatar={<div>{item.typeKey}</div>}
+                        avatar={<Text>{item.workflowStatusKey}</Text>}
                         title={
                           <div>
-                            <a href={'/ticket/ticket/' + item.id}>{item.title}</a> {item.workflowStatusKey} {item.tags} {item.priorityLevel}
+                            <span style={{ float: 'left' }}>
+                              <a href={'/ticket/ticket/' + item.id}>{item.title}</a> {item.tags}
+                            </span>
+
+                            <span {...{ align: 'right' }} style={{ display: 'block' }}>
+                              <Space>
+                                <FontAwesomeIcon
+                                  title={item.ticketType.type + ': ' + item.ticketPriority.priority}
+                                  color={item.ticketPriority.color}
+                                  icon={item.ticketType.icon as IconName}
+                                />
+                              </Space>
+                            </span>
                           </div>
                         }
                         description={
@@ -171,9 +201,13 @@ export const Ticket = () => {
                             <span style={{ float: 'left' }}>
                               {'#' + item.id + ' opened ' + timeAgo.format(convertDateTimeToServer(item.created)) + ' by ' + item.username}
                             </span>{' '}
-                            <span {...{ align: 'right' }} style={{ display: 'block' }}>
-                              <FontAwesomeIcon icon="comment" /> {item.totalComments}{' '}
-                            </span>
+                            {item.totalComments ? (
+                              <span {...{ align: 'right' }} style={{ display: 'block' }}>
+                                <FontAwesomeIcon icon="comment" /> {item.totalComments}{' '}
+                              </span>
+                            ) : (
+                              ''
+                            )}
                           </div>
                         }
                       />
@@ -203,13 +237,6 @@ export const Ticket = () => {
               pageSize={paginationState.itemsPerPage}
               onChange={handlePagination}
               showTotal={total => `Total ${total} open tickets`}
-            />
-            <JhiPagination
-              activePage={paginationState.activePage}
-              onSelect={handlePagination}
-              maxButtons={5}
-              itemsPerPage={paginationState.itemsPerPage}
-              totalItems={totalItems}
             />
           </div>
         </div>

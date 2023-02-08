@@ -1,7 +1,5 @@
 package microapp.ticket.service;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,9 +26,6 @@ public class TicketPriorityService {
     private final TicketPriorityRepository ticketPriorityRepository;
 
     private final TicketPriorityMapper ticketPriorityMapper;
-
-    private List<TicketPriorityDTO> list;
-    private HashMap<Integer, TicketPriorityDTO> map;
 
     public TicketPriorityService(TicketPriorityRepository ticketPriorityRepository, TicketPriorityMapper ticketPriorityMapper) {
         this.ticketPriorityRepository = ticketPriorityRepository;
@@ -87,31 +82,7 @@ public class TicketPriorityService {
     @Transactional(readOnly = true)
     public Flux<TicketPriorityDTO> findAll() {
         log.debug("Request to get all TicketPriorities");
-        if (list == null) refreshPrilorityList();
-        return Flux.fromIterable(this.list);
-    }
-
-    public void refreshPrilorityList() {
-        ticketPriorityRepository
-            .findAll()
-            .map(ticketPriorityMapper::toDto)
-            .collectList()
-            .subscribe(priorityList -> {
-                map = new HashMap<>();
-                this.list = priorityList;
-                Collections.sort(this.list, (a, b) -> a.getPriorityLevel() - b.getPriorityLevel());
-                for (TicketPriorityDTO priority : priorityList) {
-                    map.put(priority.getPriorityLevel(), priority);
-                }
-            });
-    }
-
-    public boolean hasKey(String key) {
-        return map.containsKey(key);
-    }
-
-    public TicketPriorityDTO getPriority(String key) {
-        return map.get(key);
+        return ticketPriorityRepository.findAll().map(ticketPriorityMapper::toDto);
     }
 
     /**

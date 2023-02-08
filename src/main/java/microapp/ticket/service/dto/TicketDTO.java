@@ -2,10 +2,13 @@ package microapp.ticket.service.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Lob;
 import javax.validation.constraints.*;
+import microapp.ticket.service.TicketTypeService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * A DTO for the {@link microapp.ticket.domain.Ticket} entity.
@@ -60,6 +63,12 @@ public class TicketDTO implements Serializable {
     private Instant closed;
 
     private Instant archived;
+
+    private List<TagDTO> tagList;
+
+    private TicketPriorityDTO ticketPriority;
+
+    private TicketTypeDTO ticketType;
 
     public Long getId() {
         return id;
@@ -203,6 +212,30 @@ public class TicketDTO implements Serializable {
 
     public void setArchived(Instant archived) {
         this.archived = archived;
+    }
+
+    public List<TagDTO> getTagList() {
+        return tagList;
+    }
+
+    public void setTagList(List<TagDTO> tagList) {
+        this.tagList = tagList;
+    }
+
+    public TicketPriorityDTO getTicketPriority() {
+        return ticketPriority;
+    }
+
+    public void setTicketPriority(TicketPriorityDTO ticketPriority) {
+        this.ticketPriority = ticketPriority;
+    }
+
+    public TicketTypeDTO getTicketType() {
+        return ticketType;
+    }
+
+    public void setTicketType(TicketTypeDTO ticketType) {
+        this.ticketType = ticketType;
     }
 
     @Override

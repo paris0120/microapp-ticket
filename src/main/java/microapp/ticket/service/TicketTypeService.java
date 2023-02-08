@@ -1,7 +1,6 @@
 package microapp.ticket.service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import microapp.ticket.domain.TicketType;
 import microapp.ticket.repository.TicketTypeRepository;
 import microapp.ticket.service.dto.TicketTypeDTO;
@@ -26,14 +25,17 @@ public class TicketTypeService {
 
     private final TicketTypeMapper ticketTypeMapper;
 
-    private List<TicketTypeDTO> list;
-
-    private HashMap<String, TicketTypeDTO> map;
-
     public TicketTypeService(TicketTypeRepository ticketTypeRepository, TicketTypeMapper ticketTypeMapper) {
         this.ticketTypeRepository = ticketTypeRepository;
         this.ticketTypeMapper = ticketTypeMapper;
     }
+
+    //    public void resetTicketTypes(){
+    //        ticketService.resetTicketTypes();
+    //        findAll().subscribe(type->{
+    //           ticketService.addTicketType(type);
+    //        });
+    //    }
 
     /**
      * Save a ticketType.
@@ -85,33 +87,7 @@ public class TicketTypeService {
     @Transactional(readOnly = true)
     public Flux<TicketTypeDTO> findAll() {
         log.debug("Request to get all TicketTypes");
-        if (this.list == null) refreshTypeList();
-        return Flux.fromIterable(this.list);
-    }
-
-    /**
-     * Refresh ticket type list.
-     */
-    public void refreshTypeList() {
-        ticketTypeRepository
-            .findAll()
-            .map(ticketTypeMapper::toDto)
-            .collectList()
-            .subscribe(types -> {
-                this.list = new LinkedList<>();
-                this.map = new HashMap<>();
-                this.list = types;
-                for (TicketTypeDTO type : types) map.put(type.getKey(), type);
-                Collections.sort(types, (a, b) -> a.getWeight() - b.getWeight());
-            });
-    }
-
-    public boolean hasKey(String key) {
-        return map.containsKey(key);
-    }
-
-    public TicketTypeDTO getType(String key) {
-        return map.get(key);
+        return ticketTypeRepository.findAll().map(ticketTypeMapper::toDto);
     }
 
     /**
