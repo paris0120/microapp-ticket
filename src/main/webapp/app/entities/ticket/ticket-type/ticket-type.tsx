@@ -75,9 +75,6 @@ export const TicketType = () => {
                   <Translate contentKey="ticketApp.ticketTicketType.description">Description</Translate>
                 </th>
                 <th>
-                  <Translate contentKey="ticketApp.ticketTicketType.parentType">Parent Type</Translate>
-                </th>
-                <th>
                   <Translate contentKey="ticketApp.ticketTicketType.isActive">Is Active</Translate>
                 </th>
                 <th>
@@ -106,7 +103,6 @@ export const TicketType = () => {
                   <td>{ticketType.color}</td>
                   <td>{ticketType.icon}</td>
                   <td>{ticketType.description}</td>
-                  <td>{ticketType.parentType}</td>
                   <td>{ticketType.isActive ? 'true' : 'false'}</td>
                   <td>{ticketType.created ? <TextFormat type="date" value={ticketType.created} format={APP_DATE_FORMAT} /> : null}</td>
                   <td>{ticketType.modified ? <TextFormat type="date" value={ticketType.modified} format={APP_DATE_FORMAT} /> : null}</td>

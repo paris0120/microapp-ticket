@@ -31,10 +31,16 @@ import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus';
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers';
 import { faUsersCog } from '@fortawesome/free-solid-svg-icons/faUsersCog';
 import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench';
-
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { faBug, faComment } from '@fortawesome/free-solid-svg-icons';
+import * as Icons from '@fortawesome/free-solid-svg-icons';
 
+export const iconList = Object.keys(Icons)
+  .filter(key => key !== 'fas' && key !== 'prefix')
+  .map(icon => Icons[icon]);
 export const loadIcons = () => {
+  library.add(...iconList);
+
   library.add(
     faArrowLeft,
     faAsterisk,
@@ -68,6 +74,8 @@ export const loadIcons = () => {
     faUserPlus,
     faUsers,
     faUsersCog,
-    faWrench
+    faWrench,
+    faComment,
+    faBug
   );
 };

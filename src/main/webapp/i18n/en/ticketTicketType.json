@@ -24,7 +24,6 @@
       "color": "Color",
       "icon": "Icon",
       "description": "Description",
-      "parentType": "Parent Type",
       "isActive": "Is Active",
       "created": "Created",
       "modified": "Modified",

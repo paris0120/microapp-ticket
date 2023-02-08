@@ -32,8 +32,10 @@ public class TicketAssignmentRowMapper implements BiFunction<Row, String, Ticket
         entity.setUsername(converter.fromRow(row, prefix + "_username", String.class));
         entity.setRoleKey(converter.fromRow(row, prefix + "_role_key", String.class));
         entity.setRoleWeight(converter.fromRow(row, prefix + "_role_weight", Integer.class));
+        entity.setIsManager(converter.fromRow(row, prefix + "_is_manager", Boolean.class));
         entity.setDepartmentKey(converter.fromRow(row, prefix + "_department_key", String.class));
         entity.setDepartmentWeight(converter.fromRow(row, prefix + "_department_weight", Integer.class));
+        entity.setAssignedByUsername(converter.fromRow(row, prefix + "_assigned_by_username", String.class));
         entity.setCreated(converter.fromRow(row, prefix + "_created", Instant.class));
         entity.setModified(converter.fromRow(row, prefix + "_modified", Instant.class));
         entity.setAccepted(converter.fromRow(row, prefix + "_accepted", Instant.class));

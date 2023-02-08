@@ -1,7 +1,6 @@
 package microapp.ticket.service;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import microapp.ticket.domain.TicketType;
 import microapp.ticket.repository.TicketTypeRepository;
@@ -26,6 +25,10 @@ public class TicketTypeService {
     private final TicketTypeRepository ticketTypeRepository;
 
     private final TicketTypeMapper ticketTypeMapper;
+
+    private List<TicketTypeDTO> list;
+
+    private HashMap<String, TicketTypeDTO> map;
 
     public TicketTypeService(TicketTypeRepository ticketTypeRepository, TicketTypeMapper ticketTypeMapper) {
         this.ticketTypeRepository = ticketTypeRepository;
@@ -82,7 +85,33 @@ public class TicketTypeService {
     @Transactional(readOnly = true)
     public Flux<TicketTypeDTO> findAll() {
         log.debug("Request to get all TicketTypes");
-        return ticketTypeRepository.findAll().map(ticketTypeMapper::toDto);
+        if (this.list == null) refreshTypeList();
+        return Flux.fromIterable(this.list);
+    }
+
+    /**
+     * Refresh ticket type list.
+     */
+    public void refreshTypeList() {
+        ticketTypeRepository
+            .findAll()
+            .map(ticketTypeMapper::toDto)
+            .collectList()
+            .subscribe(types -> {
+                this.list = new LinkedList<>();
+                this.map = new HashMap<>();
+                this.list = types;
+                for (TicketTypeDTO type : types) map.put(type.getKey(), type);
+                Collections.sort(types, (a, b) -> a.getWeight() - b.getWeight());
+            });
+    }
+
+    public boolean hasKey(String key) {
+        return map.containsKey(key);
+    }
+
+    public TicketTypeDTO getType(String key) {
+        return map.get(key);
     }
 
     /**

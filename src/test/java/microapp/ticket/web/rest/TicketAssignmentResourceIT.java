@@ -50,6 +50,9 @@ class TicketAssignmentResourceIT {
     private static final Integer DEFAULT_ROLE_WEIGHT = 1;
     private static final Integer UPDATED_ROLE_WEIGHT = 2;
 
+    private static final String DEFAULT_ASSIGNED_BY_USERNAME = "AAAAAAAAAA";
+    private static final String UPDATED_ASSIGNED_BY_USERNAME = "BBBBBBBBBB";
+
     private static final String DEFAULT_DEPARTMENT_KEY = "AAAAAAAAAA";
     private static final String UPDATED_DEPARTMENT_KEY = "BBBBBBBBBB";
 
@@ -107,6 +110,7 @@ class TicketAssignmentResourceIT {
             .username(DEFAULT_USERNAME)
             .roleKey(DEFAULT_ROLE_KEY)
             .roleWeight(DEFAULT_ROLE_WEIGHT)
+            .assignedByUsername(DEFAULT_ASSIGNED_BY_USERNAME)
             .departmentKey(DEFAULT_DEPARTMENT_KEY)
             .departmentWeight(DEFAULT_DEPARTMENT_WEIGHT)
             .created(DEFAULT_CREATED)
@@ -131,6 +135,7 @@ class TicketAssignmentResourceIT {
             .username(UPDATED_USERNAME)
             .roleKey(UPDATED_ROLE_KEY)
             .roleWeight(UPDATED_ROLE_WEIGHT)
+            .assignedByUsername(UPDATED_ASSIGNED_BY_USERNAME)
             .departmentKey(UPDATED_DEPARTMENT_KEY)
             .departmentWeight(UPDATED_DEPARTMENT_WEIGHT)
             .created(UPDATED_CREATED)
@@ -189,6 +194,7 @@ class TicketAssignmentResourceIT {
         assertThat(testTicketAssignment.getUsername()).isEqualTo(DEFAULT_USERNAME);
         assertThat(testTicketAssignment.getRoleKey()).isEqualTo(DEFAULT_ROLE_KEY);
         assertThat(testTicketAssignment.getRoleWeight()).isEqualTo(DEFAULT_ROLE_WEIGHT);
+        assertThat(testTicketAssignment.getAssignedByUsername()).isEqualTo(DEFAULT_ASSIGNED_BY_USERNAME);
         assertThat(testTicketAssignment.getDepartmentKey()).isEqualTo(DEFAULT_DEPARTMENT_KEY);
         assertThat(testTicketAssignment.getDepartmentWeight()).isEqualTo(DEFAULT_DEPARTMENT_WEIGHT);
         assertThat(testTicketAssignment.getCreated()).isEqualTo(DEFAULT_CREATED);
@@ -333,6 +339,28 @@ class TicketAssignmentResourceIT {
     }
 
     @Test
+    void checkAssignedByUsernameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = ticketAssignmentRepository.findAll().collectList().block().size();
+        // set the field null
+        ticketAssignment.setAssignedByUsername(null);
+
+        // Create the TicketAssignment, which fails.
+        TicketAssignmentDTO ticketAssignmentDTO = ticketAssignmentMapper.toDto(ticketAssignment);
+
+        webTestClient
+            .post()
+            .uri(ENTITY_API_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(TestUtil.convertObjectToJsonBytes(ticketAssignmentDTO))
+            .exchange()
+            .expectStatus()
+            .isBadRequest();
+
+        List<TicketAssignment> ticketAssignmentList = ticketAssignmentRepository.findAll().collectList().block();
+        assertThat(ticketAssignmentList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
     void checkDepartmentKeyIsRequired() throws Exception {
         int databaseSizeBeforeTest = ticketAssignmentRepository.findAll().collectList().block().size();
         // set the field null
@@ -449,6 +477,7 @@ class TicketAssignmentResourceIT {
         assertThat(testTicketAssignment.getUsername()).isEqualTo(DEFAULT_USERNAME);
         assertThat(testTicketAssignment.getRoleKey()).isEqualTo(DEFAULT_ROLE_KEY);
         assertThat(testTicketAssignment.getRoleWeight()).isEqualTo(DEFAULT_ROLE_WEIGHT);
+        assertThat(testTicketAssignment.getAssignedByUsername()).isEqualTo(DEFAULT_ASSIGNED_BY_USERNAME);
         assertThat(testTicketAssignment.getDepartmentKey()).isEqualTo(DEFAULT_DEPARTMENT_KEY);
         assertThat(testTicketAssignment.getDepartmentWeight()).isEqualTo(DEFAULT_DEPARTMENT_WEIGHT);
         assertThat(testTicketAssignment.getCreated()).isEqualTo(DEFAULT_CREATED);
@@ -487,6 +516,8 @@ class TicketAssignmentResourceIT {
             .value(hasItem(DEFAULT_ROLE_KEY))
             .jsonPath("$.[*].roleWeight")
             .value(hasItem(DEFAULT_ROLE_WEIGHT))
+            .jsonPath("$.[*].assignedByUsername")
+            .value(hasItem(DEFAULT_ASSIGNED_BY_USERNAME))
             .jsonPath("$.[*].departmentKey")
             .value(hasItem(DEFAULT_DEPARTMENT_KEY))
             .jsonPath("$.[*].departmentWeight")
@@ -533,6 +564,8 @@ class TicketAssignmentResourceIT {
             .value(is(DEFAULT_ROLE_KEY))
             .jsonPath("$.roleWeight")
             .value(is(DEFAULT_ROLE_WEIGHT))
+            .jsonPath("$.assignedByUsername")
+            .value(is(DEFAULT_ASSIGNED_BY_USERNAME))
             .jsonPath("$.departmentKey")
             .value(is(DEFAULT_DEPARTMENT_KEY))
             .jsonPath("$.departmentWeight")
@@ -578,6 +611,7 @@ class TicketAssignmentResourceIT {
             .username(UPDATED_USERNAME)
             .roleKey(UPDATED_ROLE_KEY)
             .roleWeight(UPDATED_ROLE_WEIGHT)
+            .assignedByUsername(UPDATED_ASSIGNED_BY_USERNAME)
             .departmentKey(UPDATED_DEPARTMENT_KEY)
             .departmentWeight(UPDATED_DEPARTMENT_WEIGHT)
             .created(UPDATED_CREATED)
@@ -606,6 +640,7 @@ class TicketAssignmentResourceIT {
         assertThat(testTicketAssignment.getUsername()).isEqualTo(UPDATED_USERNAME);
         assertThat(testTicketAssignment.getRoleKey()).isEqualTo(UPDATED_ROLE_KEY);
         assertThat(testTicketAssignment.getRoleWeight()).isEqualTo(UPDATED_ROLE_WEIGHT);
+        assertThat(testTicketAssignment.getAssignedByUsername()).isEqualTo(UPDATED_ASSIGNED_BY_USERNAME);
         assertThat(testTicketAssignment.getDepartmentKey()).isEqualTo(UPDATED_DEPARTMENT_KEY);
         assertThat(testTicketAssignment.getDepartmentWeight()).isEqualTo(UPDATED_DEPARTMENT_WEIGHT);
         assertThat(testTicketAssignment.getCreated()).isEqualTo(UPDATED_CREATED);
@@ -701,7 +736,8 @@ class TicketAssignmentResourceIT {
             .issueUuid(UPDATED_ISSUE_UUID)
             .roleKey(UPDATED_ROLE_KEY)
             .roleWeight(UPDATED_ROLE_WEIGHT)
-            .departmentKey(UPDATED_DEPARTMENT_KEY)
+            .assignedByUsername(UPDATED_ASSIGNED_BY_USERNAME)
+            .created(UPDATED_CREATED)
             .modified(UPDATED_MODIFIED)
             .accepted(UPDATED_ACCEPTED)
             .left(UPDATED_LEFT)
@@ -726,9 +762,10 @@ class TicketAssignmentResourceIT {
         assertThat(testTicketAssignment.getUsername()).isEqualTo(DEFAULT_USERNAME);
         assertThat(testTicketAssignment.getRoleKey()).isEqualTo(UPDATED_ROLE_KEY);
         assertThat(testTicketAssignment.getRoleWeight()).isEqualTo(UPDATED_ROLE_WEIGHT);
-        assertThat(testTicketAssignment.getDepartmentKey()).isEqualTo(UPDATED_DEPARTMENT_KEY);
+        assertThat(testTicketAssignment.getAssignedByUsername()).isEqualTo(UPDATED_ASSIGNED_BY_USERNAME);
+        assertThat(testTicketAssignment.getDepartmentKey()).isEqualTo(DEFAULT_DEPARTMENT_KEY);
         assertThat(testTicketAssignment.getDepartmentWeight()).isEqualTo(DEFAULT_DEPARTMENT_WEIGHT);
-        assertThat(testTicketAssignment.getCreated()).isEqualTo(DEFAULT_CREATED);
+        assertThat(testTicketAssignment.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testTicketAssignment.getModified()).isEqualTo(UPDATED_MODIFIED);
         assertThat(testTicketAssignment.getAccepted()).isEqualTo(UPDATED_ACCEPTED);
         assertThat(testTicketAssignment.getLeft()).isEqualTo(UPDATED_LEFT);
@@ -753,6 +790,7 @@ class TicketAssignmentResourceIT {
             .username(UPDATED_USERNAME)
             .roleKey(UPDATED_ROLE_KEY)
             .roleWeight(UPDATED_ROLE_WEIGHT)
+            .assignedByUsername(UPDATED_ASSIGNED_BY_USERNAME)
             .departmentKey(UPDATED_DEPARTMENT_KEY)
             .departmentWeight(UPDATED_DEPARTMENT_WEIGHT)
             .created(UPDATED_CREATED)
@@ -780,6 +818,7 @@ class TicketAssignmentResourceIT {
         assertThat(testTicketAssignment.getUsername()).isEqualTo(UPDATED_USERNAME);
         assertThat(testTicketAssignment.getRoleKey()).isEqualTo(UPDATED_ROLE_KEY);
         assertThat(testTicketAssignment.getRoleWeight()).isEqualTo(UPDATED_ROLE_WEIGHT);
+        assertThat(testTicketAssignment.getAssignedByUsername()).isEqualTo(UPDATED_ASSIGNED_BY_USERNAME);
         assertThat(testTicketAssignment.getDepartmentKey()).isEqualTo(UPDATED_DEPARTMENT_KEY);
         assertThat(testTicketAssignment.getDepartmentWeight()).isEqualTo(UPDATED_DEPARTMENT_WEIGHT);
         assertThat(testTicketAssignment.getCreated()).isEqualTo(UPDATED_CREATED);

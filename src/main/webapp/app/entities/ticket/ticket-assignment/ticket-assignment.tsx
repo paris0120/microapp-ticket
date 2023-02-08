@@ -72,10 +72,16 @@ export const TicketAssignment = () => {
                   <Translate contentKey="ticketApp.ticketTicketAssignment.roleWeight">Role Weight</Translate>
                 </th>
                 <th>
+                  <Translate contentKey="ticketApp.ticketTicketAssignment.isManager">Is Manager</Translate>
+                </th>
+                <th>
                   <Translate contentKey="ticketApp.ticketTicketAssignment.departmentKey">Department Key</Translate>
                 </th>
                 <th>
                   <Translate contentKey="ticketApp.ticketTicketAssignment.departmentWeight">Department Weight</Translate>
+                </th>
+                <th>
+                  <Translate contentKey="ticketApp.ticketTicketAssignment.assignedByUsername">Assigned By Username</Translate>
                 </th>
                 <th>
                   <Translate contentKey="ticketApp.ticketTicketAssignment.created">Created</Translate>
@@ -111,8 +117,10 @@ export const TicketAssignment = () => {
                   <td>{ticketAssignment.username}</td>
                   <td>{ticketAssignment.roleKey}</td>
                   <td>{ticketAssignment.roleWeight}</td>
+                  <td>{ticketAssignment.isManager ? 'true' : 'false'}</td>
                   <td>{ticketAssignment.departmentKey}</td>
                   <td>{ticketAssignment.departmentWeight}</td>
+                  <td>{ticketAssignment.assignedByUsername}</td>
                   <td>
                     {ticketAssignment.created ? <TextFormat type="date" value={ticketAssignment.created} format={APP_DATE_FORMAT} /> : null}
                   </td>

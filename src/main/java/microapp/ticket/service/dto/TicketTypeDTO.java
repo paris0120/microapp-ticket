@@ -31,9 +31,6 @@ public class TicketTypeDTO implements Serializable {
     private String description;
 
     @NotNull(message = "must not be null")
-    private String parentType;
-
-    @NotNull(message = "must not be null")
     private Boolean isActive;
 
     @NotNull(message = "must not be null")
@@ -100,14 +97,6 @@ public class TicketTypeDTO implements Serializable {
         this.description = description;
     }
 
-    public String getParentType() {
-        return parentType;
-    }
-
-    public void setParentType(String parentType) {
-        this.parentType = parentType;
-    }
-
     public Boolean getIsActive() {
         return isActive;
     }
@@ -172,7 +161,6 @@ public class TicketTypeDTO implements Serializable {
             ", color='" + getColor() + "'" +
             ", icon='" + getIcon() + "'" +
             ", description='" + getDescription() + "'" +
-            ", parentType='" + getParentType() + "'" +
             ", isActive='" + getIsActive() + "'" +
             ", created='" + getCreated() + "'" +
             ", modified='" + getModified() + "'" +

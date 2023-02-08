@@ -53,9 +53,6 @@ class TicketTypeResourceIT {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final String DEFAULT_PARENT_TYPE = "AAAAAAAAAA";
-    private static final String UPDATED_PARENT_TYPE = "BBBBBBBBBB";
-
     private static final Boolean DEFAULT_IS_ACTIVE = false;
     private static final Boolean UPDATED_IS_ACTIVE = true;
 
@@ -102,7 +99,6 @@ class TicketTypeResourceIT {
             .color(DEFAULT_COLOR)
             .icon(DEFAULT_ICON)
             .description(DEFAULT_DESCRIPTION)
-            .parentType(DEFAULT_PARENT_TYPE)
             .isActive(DEFAULT_IS_ACTIVE)
             .created(DEFAULT_CREATED)
             .modified(DEFAULT_MODIFIED)
@@ -124,7 +120,6 @@ class TicketTypeResourceIT {
             .color(UPDATED_COLOR)
             .icon(UPDATED_ICON)
             .description(UPDATED_DESCRIPTION)
-            .parentType(UPDATED_PARENT_TYPE)
             .isActive(UPDATED_IS_ACTIVE)
             .created(UPDATED_CREATED)
             .modified(UPDATED_MODIFIED)
@@ -180,7 +175,6 @@ class TicketTypeResourceIT {
         assertThat(testTicketType.getColor()).isEqualTo(DEFAULT_COLOR);
         assertThat(testTicketType.getIcon()).isEqualTo(DEFAULT_ICON);
         assertThat(testTicketType.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testTicketType.getParentType()).isEqualTo(DEFAULT_PARENT_TYPE);
         assertThat(testTicketType.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
         assertThat(testTicketType.getCreated()).isEqualTo(DEFAULT_CREATED);
         assertThat(testTicketType.getModified()).isEqualTo(DEFAULT_MODIFIED);
@@ -259,28 +253,6 @@ class TicketTypeResourceIT {
         int databaseSizeBeforeTest = ticketTypeRepository.findAll().collectList().block().size();
         // set the field null
         ticketType.setWeight(null);
-
-        // Create the TicketType, which fails.
-        TicketTypeDTO ticketTypeDTO = ticketTypeMapper.toDto(ticketType);
-
-        webTestClient
-            .post()
-            .uri(ENTITY_API_URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(TestUtil.convertObjectToJsonBytes(ticketTypeDTO))
-            .exchange()
-            .expectStatus()
-            .isBadRequest();
-
-        List<TicketType> ticketTypeList = ticketTypeRepository.findAll().collectList().block();
-        assertThat(ticketTypeList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    void checkParentTypeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = ticketTypeRepository.findAll().collectList().block().size();
-        // set the field null
-        ticketType.setParentType(null);
 
         // Create the TicketType, which fails.
         TicketTypeDTO ticketTypeDTO = ticketTypeMapper.toDto(ticketType);
@@ -394,7 +366,6 @@ class TicketTypeResourceIT {
         assertThat(testTicketType.getColor()).isEqualTo(DEFAULT_COLOR);
         assertThat(testTicketType.getIcon()).isEqualTo(DEFAULT_ICON);
         assertThat(testTicketType.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testTicketType.getParentType()).isEqualTo(DEFAULT_PARENT_TYPE);
         assertThat(testTicketType.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
         assertThat(testTicketType.getCreated()).isEqualTo(DEFAULT_CREATED);
         assertThat(testTicketType.getModified()).isEqualTo(DEFAULT_MODIFIED);
@@ -431,8 +402,6 @@ class TicketTypeResourceIT {
             .value(hasItem(DEFAULT_ICON))
             .jsonPath("$.[*].description")
             .value(hasItem(DEFAULT_DESCRIPTION.toString()))
-            .jsonPath("$.[*].parentType")
-            .value(hasItem(DEFAULT_PARENT_TYPE))
             .jsonPath("$.[*].isActive")
             .value(hasItem(DEFAULT_IS_ACTIVE.booleanValue()))
             .jsonPath("$.[*].created")
@@ -473,8 +442,6 @@ class TicketTypeResourceIT {
             .value(is(DEFAULT_ICON))
             .jsonPath("$.description")
             .value(is(DEFAULT_DESCRIPTION.toString()))
-            .jsonPath("$.parentType")
-            .value(is(DEFAULT_PARENT_TYPE))
             .jsonPath("$.isActive")
             .value(is(DEFAULT_IS_ACTIVE.booleanValue()))
             .jsonPath("$.created")
@@ -513,7 +480,6 @@ class TicketTypeResourceIT {
             .color(UPDATED_COLOR)
             .icon(UPDATED_ICON)
             .description(UPDATED_DESCRIPTION)
-            .parentType(UPDATED_PARENT_TYPE)
             .isActive(UPDATED_IS_ACTIVE)
             .created(UPDATED_CREATED)
             .modified(UPDATED_MODIFIED)
@@ -539,7 +505,6 @@ class TicketTypeResourceIT {
         assertThat(testTicketType.getColor()).isEqualTo(UPDATED_COLOR);
         assertThat(testTicketType.getIcon()).isEqualTo(UPDATED_ICON);
         assertThat(testTicketType.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testTicketType.getParentType()).isEqualTo(UPDATED_PARENT_TYPE);
         assertThat(testTicketType.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testTicketType.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testTicketType.getModified()).isEqualTo(UPDATED_MODIFIED);
@@ -626,7 +591,7 @@ class TicketTypeResourceIT {
         TicketType partialUpdatedTicketType = new TicketType();
         partialUpdatedTicketType.setId(ticketType.getId());
 
-        partialUpdatedTicketType.key(UPDATED_KEY).color(UPDATED_COLOR).description(UPDATED_DESCRIPTION).parentType(UPDATED_PARENT_TYPE);
+        partialUpdatedTicketType.key(UPDATED_KEY).color(UPDATED_COLOR).description(UPDATED_DESCRIPTION).isActive(UPDATED_IS_ACTIVE);
 
         webTestClient
             .patch()
@@ -647,8 +612,7 @@ class TicketTypeResourceIT {
         assertThat(testTicketType.getColor()).isEqualTo(UPDATED_COLOR);
         assertThat(testTicketType.getIcon()).isEqualTo(DEFAULT_ICON);
         assertThat(testTicketType.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testTicketType.getParentType()).isEqualTo(UPDATED_PARENT_TYPE);
-        assertThat(testTicketType.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
+        assertThat(testTicketType.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testTicketType.getCreated()).isEqualTo(DEFAULT_CREATED);
         assertThat(testTicketType.getModified()).isEqualTo(DEFAULT_MODIFIED);
         assertThat(testTicketType.getArchived()).isEqualTo(DEFAULT_ARCHIVED);
@@ -672,7 +636,6 @@ class TicketTypeResourceIT {
             .color(UPDATED_COLOR)
             .icon(UPDATED_ICON)
             .description(UPDATED_DESCRIPTION)
-            .parentType(UPDATED_PARENT_TYPE)
             .isActive(UPDATED_IS_ACTIVE)
             .created(UPDATED_CREATED)
             .modified(UPDATED_MODIFIED)
@@ -697,7 +660,6 @@ class TicketTypeResourceIT {
         assertThat(testTicketType.getColor()).isEqualTo(UPDATED_COLOR);
         assertThat(testTicketType.getIcon()).isEqualTo(UPDATED_ICON);
         assertThat(testTicketType.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testTicketType.getParentType()).isEqualTo(UPDATED_PARENT_TYPE);
         assertThat(testTicketType.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testTicketType.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testTicketType.getModified()).isEqualTo(UPDATED_MODIFIED);

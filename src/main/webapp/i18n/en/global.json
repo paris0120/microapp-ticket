@@ -8,8 +8,8 @@
       "entities": {
         "main": "Entities",
         "ticketTicket": "Ticket",
-        "ticketTicketType": "Ticket Type",
         "ticketTicketAssignment": "Ticket Assignment",
+        "ticketTicketType": "Ticket Type",
         "ticketTicketPriority": "Ticket Priority",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },

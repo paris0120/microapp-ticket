@@ -63,6 +63,12 @@ export const TicketAssignmentDetail = () => {
           </dt>
           <dd>{ticketAssignmentEntity.roleWeight}</dd>
           <dt>
+            <span id="isManager">
+              <Translate contentKey="ticketApp.ticketTicketAssignment.isManager">Is Manager</Translate>
+            </span>
+          </dt>
+          <dd>{ticketAssignmentEntity.isManager ? 'true' : 'false'}</dd>
+          <dt>
             <span id="departmentKey">
               <Translate contentKey="ticketApp.ticketTicketAssignment.departmentKey">Department Key</Translate>
             </span>
@@ -74,6 +80,12 @@ export const TicketAssignmentDetail = () => {
             </span>
           </dt>
           <dd>{ticketAssignmentEntity.departmentWeight}</dd>
+          <dt>
+            <span id="assignedByUsername">
+              <Translate contentKey="ticketApp.ticketTicketAssignment.assignedByUsername">Assigned By Username</Translate>
+            </span>
+          </dt>
+          <dd>{ticketAssignmentEntity.assignedByUsername}</dd>
           <dt>
             <span id="created">
               <Translate contentKey="ticketApp.ticketTicketAssignment.created">Created</Translate>

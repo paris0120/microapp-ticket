@@ -69,12 +69,6 @@ export const TicketTypeDetail = () => {
           </dt>
           <dd>{ticketTypeEntity.description}</dd>
           <dt>
-            <span id="parentType">
-              <Translate contentKey="ticketApp.ticketTicketType.parentType">Parent Type</Translate>
-            </span>
-          </dt>
-          <dd>{ticketTypeEntity.parentType}</dd>
-          <dt>
             <span id="isActive">
               <Translate contentKey="ticketApp.ticketTicketType.isActive">Is Active</Translate>
             </span>

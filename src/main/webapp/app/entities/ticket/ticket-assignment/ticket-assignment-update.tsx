@@ -160,6 +160,14 @@ export const TicketAssignmentUpdate = () => {
                 }}
               />
               <ValidatedField
+                label={translate('ticketApp.ticketTicketAssignment.isManager')}
+                id="ticket-assignment-isManager"
+                name="isManager"
+                data-cy="isManager"
+                check
+                type="checkbox"
+              />
+              <ValidatedField
                 label={translate('ticketApp.ticketTicketAssignment.departmentKey')}
                 id="ticket-assignment-departmentKey"
                 name="departmentKey"
@@ -178,6 +186,16 @@ export const TicketAssignmentUpdate = () => {
                 validate={{
                   required: { value: true, message: translate('entity.validation.required') },
                   validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
+              <ValidatedField
+                label={translate('ticketApp.ticketTicketAssignment.assignedByUsername')}
+                id="ticket-assignment-assignedByUsername"
+                name="assignedByUsername"
+                data-cy="assignedByUsername"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
                 }}
               />
               <ValidatedField

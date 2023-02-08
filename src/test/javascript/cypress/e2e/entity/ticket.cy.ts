@@ -23,9 +23,9 @@ describe('Ticket e2e test', () => {
     workflowStatusKey: 'Salad Tools',
     priorityLevel: 49242,
     totalComments: 85101,
-    created: '2023-02-01T10:37:32.236Z',
-    modified: '2023-01-31T14:45:45.589Z',
-    updated: '2023-01-31T21:04:43.543Z',
+    created: '2023-02-07T14:56:38.236Z',
+    modified: '2023-02-06T19:04:51.589Z',
+    updated: '2023-02-07T01:23:49.543Z',
   };
 
   let ticket;
@@ -206,15 +206,15 @@ describe('Ticket e2e test', () => {
         .invoke('val')
         .should('match', new RegExp('fce308d4-2b65-48f5-8a37-96c340da4681'));
 
-      cy.get(`[data-cy="created"]`).type('2023-02-01T11:38').blur().should('have.value', '2023-02-01T11:38');
+      cy.get(`[data-cy="created"]`).type('2023-02-07T15:58').blur().should('have.value', '2023-02-07T15:58');
 
-      cy.get(`[data-cy="modified"]`).type('2023-02-01T01:20').blur().should('have.value', '2023-02-01T01:20');
+      cy.get(`[data-cy="modified"]`).type('2023-02-07T05:39').blur().should('have.value', '2023-02-07T05:39');
 
-      cy.get(`[data-cy="updated"]`).type('2023-01-31T17:38').blur().should('have.value', '2023-01-31T17:38');
+      cy.get(`[data-cy="updated"]`).type('2023-02-06T21:57').blur().should('have.value', '2023-02-06T21:57');
 
-      cy.get(`[data-cy="closed"]`).type('2023-02-01T04:25').blur().should('have.value', '2023-02-01T04:25');
+      cy.get(`[data-cy="closed"]`).type('2023-02-07T08:44').blur().should('have.value', '2023-02-07T08:44');
 
-      cy.get(`[data-cy="archived"]`).type('2023-02-01T07:08').blur().should('have.value', '2023-02-01T07:08');
+      cy.get(`[data-cy="archived"]`).type('2023-02-07T11:27').blur().should('have.value', '2023-02-07T11:27');
 
       cy.get(entityCreateSaveButtonSelector).click();
 

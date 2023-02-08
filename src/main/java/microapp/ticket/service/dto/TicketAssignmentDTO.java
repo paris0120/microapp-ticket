@@ -30,10 +30,16 @@ public class TicketAssignmentDTO implements Serializable {
     private Integer roleWeight;
 
     @NotNull(message = "must not be null")
+    private Boolean isManager;
+
+    @NotNull(message = "must not be null")
     private String departmentKey;
 
     @NotNull(message = "must not be null")
     private Integer departmentWeight;
+
+    @NotNull(message = "must not be null")
+    private String assignedByUsername;
 
     @NotNull(message = "must not be null")
     private Instant created;
@@ -97,6 +103,14 @@ public class TicketAssignmentDTO implements Serializable {
         this.roleWeight = roleWeight;
     }
 
+    public Boolean getIsManager() {
+        return isManager;
+    }
+
+    public void setIsManager(Boolean isManager) {
+        this.isManager = isManager;
+    }
+
     public String getDepartmentKey() {
         return departmentKey;
     }
@@ -111,6 +125,14 @@ public class TicketAssignmentDTO implements Serializable {
 
     public void setDepartmentWeight(Integer departmentWeight) {
         this.departmentWeight = departmentWeight;
+    }
+
+    public String getAssignedByUsername() {
+        return assignedByUsername;
+    }
+
+    public void setAssignedByUsername(String assignedByUsername) {
+        this.assignedByUsername = assignedByUsername;
     }
 
     public Instant getCreated() {
@@ -192,8 +214,10 @@ public class TicketAssignmentDTO implements Serializable {
             ", username='" + getUsername() + "'" +
             ", roleKey='" + getRoleKey() + "'" +
             ", roleWeight=" + getRoleWeight() +
+            ", isManager='" + getIsManager() + "'" +
             ", departmentKey='" + getDepartmentKey() + "'" +
             ", departmentWeight=" + getDepartmentWeight() +
+            ", assignedByUsername='" + getAssignedByUsername() + "'" +
             ", created='" + getCreated() + "'" +
             ", modified='" + getModified() + "'" +
             ", accepted='" + getAccepted() + "'" +

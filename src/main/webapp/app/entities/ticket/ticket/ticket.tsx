@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Button, Table } from 'reactstrap';
+// import { Button, Table } from 'reactstrap';
 import { byteSize, Translate, TextFormat, getSortState, JhiPagination, JhiItemCount } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -11,15 +11,51 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { ITicket } from 'app/shared/model/ticket/ticket.model';
 import { getEntities } from './ticket.reducer';
+import { Avatar, Button, Col, Dropdown, List, MenuProps, Pagination, Radio, Row, Space, Table, TablePaginationConfig, Tag } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import { ColumnsType } from 'antd/es/table';
+import { data } from 'autoprefixer';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+import { convertDateTimeToServer } from 'app/shared/util/date-utils';
 
+const items: MenuProps['items'] = [
+  {
+    label: 'Newest',
+    key: 'newest',
+  },
+  {
+    label: 'Oldest',
+    key: 'oldest',
+  },
+];
 export const Ticket = () => {
   const dispatch = useAppDispatch();
 
   const location = useLocation();
   const navigate = useNavigate();
 
+  const onSortBy = e => {
+    switch (e.key) {
+      case 'newest':
+        setPaginationState({
+          ...paginationState,
+          order: DESC,
+          sort: 'updated',
+        });
+        break;
+      case 'oldest':
+        setPaginationState({
+          ...paginationState,
+          order: ASC,
+          sort: 'updated',
+        });
+        break;
+    }
+  };
+  const [isClosed, setIsClosed] = useState(0);
   const [paginationState, setPaginationState] = useState(
-    overridePaginationStateWithQueryParams(getSortState(location, ITEMS_PER_PAGE, 'id'), location.search)
+    overridePaginationStateWithQueryParams(getSortState(location, ITEMS_PER_PAGE, 'updated', 'desc'), location.search)
   );
 
   const ticketList = useAppSelector(state => state.ticket.ticket.entities);
@@ -38,15 +74,14 @@ export const Ticket = () => {
 
   const sortEntities = () => {
     getAllEntities();
-    const endURL = `?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`;
+    const endURL = `?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}&closed=${isClosed}`;
     if (location.search !== endURL) {
       navigate(`${location.pathname}${endURL}`);
     }
   };
-
   useEffect(() => {
     sortEntities();
-  }, [paginationState.activePage, paginationState.order, paginationState.sort]);
+  }, [paginationState.activePage, paginationState.order, paginationState.sort, isClosed]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -81,149 +116,73 @@ export const Ticket = () => {
     sortEntities();
   };
 
+  const timeAgo = new TimeAgo('en-US');
   return (
     <div>
       <h2 id="ticket-heading" data-cy="TicketHeading">
         <Translate contentKey="ticketApp.ticketTicket.home.title">Tickets</Translate>
-        <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="ticketApp.ticketTicket.home.refreshListLabel">Refresh List</Translate>
-          </Button>
-          <Link to="/ticket/ticket/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="ticketApp.ticketTicket.home.createLabel">Create new Ticket</Translate>
-          </Link>
-        </div>
       </h2>
       <div className="table-responsive">
+        <Row>
+          <Col span={24} {...{ align: 'right' }}>
+            <span style={{ float: 'left' }}>
+              <Radio.Group value={isClosed} onChange={e => setIsClosed(e.target.value)}>
+                <Radio.Button value="0">Open</Radio.Button>
+                <Radio.Button value="1">Closed</Radio.Button>
+              </Radio.Group>
+            </span>
+            {ticketList && ticketList.length > 0 ? (
+              <Dropdown menu={{ items, onClick: onSortBy }}>
+                <Space>
+                  Sort By
+                  <DownOutlined />
+                </Space>
+              </Dropdown>
+            ) : (
+              ''
+            )}
+
+            <Button type="link" id="create" data-cy="entityCreateButton" href="/ticket/ticket/new" color="info">
+              <FontAwesomeIcon icon="plus" />
+              &nbsp;
+              <Translate contentKey="ticketApp.ticketTicket.home.createLabel">Create new Ticket</Translate>
+            </Button>
+          </Col>
+        </Row>
+
         {ticketList && ticketList.length > 0 ? (
-          <Table responsive>
-            <thead>
-              <tr>
-                <th className="hand" onClick={sort('id')}>
-                  <Translate contentKey="ticketApp.ticketTicket.id">ID</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('username')}>
-                  <Translate contentKey="ticketApp.ticketTicket.username">Username</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('userFirstName')}>
-                  <Translate contentKey="ticketApp.ticketTicket.userFirstName">User First Name</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('userLastName')}>
-                  <Translate contentKey="ticketApp.ticketTicket.userLastName">User Last Name</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('userDisplayName')}>
-                  <Translate contentKey="ticketApp.ticketTicket.userDisplayName">User Display Name</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('title')}>
-                  <Translate contentKey="ticketApp.ticketTicket.title">Title</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('content')}>
-                  <Translate contentKey="ticketApp.ticketTicket.content">Content</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('typeKey')}>
-                  <Translate contentKey="ticketApp.ticketTicket.typeKey">Type Key</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('workflowStatusKey')}>
-                  <Translate contentKey="ticketApp.ticketTicket.workflowStatusKey">Workflow Status Key</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('priorityLevel')}>
-                  <Translate contentKey="ticketApp.ticketTicket.priorityLevel">Priority Level</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('tags')}>
-                  <Translate contentKey="ticketApp.ticketTicket.tags">Tags</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('totalComments')}>
-                  <Translate contentKey="ticketApp.ticketTicket.totalComments">Total Comments</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('uuid')}>
-                  <Translate contentKey="ticketApp.ticketTicket.uuid">Uuid</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('created')}>
-                  <Translate contentKey="ticketApp.ticketTicket.created">Created</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('modified')}>
-                  <Translate contentKey="ticketApp.ticketTicket.modified">Modified</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('updated')}>
-                  <Translate contentKey="ticketApp.ticketTicket.updated">Updated</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('closed')}>
-                  <Translate contentKey="ticketApp.ticketTicket.closed">Closed</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('archived')}>
-                  <Translate contentKey="ticketApp.ticketTicket.archived">Archived</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {ticketList.map((ticket, i) => (
-                <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
-                    <Button tag={Link} to={`/ticket/ticket/${ticket.id}`} color="link" size="sm">
-                      {ticket.id}
-                    </Button>
-                  </td>
-                  <td>{ticket.username}</td>
-                  <td>{ticket.userFirstName}</td>
-                  <td>{ticket.userLastName}</td>
-                  <td>{ticket.userDisplayName}</td>
-                  <td>{ticket.title}</td>
-                  <td>{ticket.content}</td>
-                  <td>{ticket.typeKey}</td>
-                  <td>{ticket.workflowStatusKey}</td>
-                  <td>{ticket.priorityLevel}</td>
-                  <td>{ticket.tags}</td>
-                  <td>{ticket.totalComments}</td>
-                  <td>{ticket.uuid}</td>
-                  <td>{ticket.created ? <TextFormat type="date" value={ticket.created} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>{ticket.modified ? <TextFormat type="date" value={ticket.modified} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>{ticket.updated ? <TextFormat type="date" value={ticket.updated} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>{ticket.closed ? <TextFormat type="date" value={ticket.closed} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>{ticket.archived ? <TextFormat type="date" value={ticket.archived} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td className="text-end">
-                    <div className="btn-group flex-btn-group-container">
-                      <Button tag={Link} to={`/ticket/ticket/${ticket.id}`} color="info" size="sm" data-cy="entityDetailsButton">
-                        <FontAwesomeIcon icon="eye" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.view">View</Translate>
-                        </span>
-                      </Button>
-                      <Button
-                        tag={Link}
-                        to={`/ticket/ticket/${ticket.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
-                        color="primary"
-                        size="sm"
-                        data-cy="entityEditButton"
-                      >
-                        <FontAwesomeIcon icon="pencil-alt" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.edit">Edit</Translate>
-                        </span>
-                      </Button>
-                      <Button
-                        tag={Link}
-                        to={`/ticket/ticket/${ticket.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
-                        color="danger"
-                        size="sm"
-                        data-cy="entityDeleteButton"
-                      >
-                        <FontAwesomeIcon icon="trash" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.delete">Delete</Translate>
-                        </span>
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          <>
+            <Row>
+              <Col span={24}>
+                <List
+                  itemLayout="horizontal"
+                  dataSource={ticketList}
+                  renderItem={(item: ITicket) => (
+                    <List.Item>
+                      <List.Item.Meta
+                        avatar={<div>{item.typeKey}</div>}
+                        title={
+                          <div>
+                            <a href={'/ticket/ticket/' + item.id}>{item.title}</a> {item.workflowStatusKey} {item.tags} {item.priorityLevel}
+                          </div>
+                        }
+                        description={
+                          <div>
+                            <span style={{ float: 'left' }}>
+                              {'#' + item.id + ' opened ' + timeAgo.format(convertDateTimeToServer(item.created)) + ' by ' + item.username}
+                            </span>{' '}
+                            <span {...{ align: 'right' }} style={{ display: 'block' }}>
+                              <FontAwesomeIcon icon="comment" /> {item.totalComments}{' '}
+                            </span>
+                          </div>
+                        }
+                      />
+                    </List.Item>
+                  )}
+                />
+              </Col>
+            </Row>
+          </>
         ) : (
           !loading && (
             <div className="alert alert-warning">
@@ -238,6 +197,13 @@ export const Ticket = () => {
             <JhiItemCount page={paginationState.activePage} total={totalItems} itemsPerPage={paginationState.itemsPerPage} i18nEnabled />
           </div>
           <div className="justify-content-center d-flex">
+            <Pagination
+              defaultCurrent={paginationState.itemsPerPage}
+              total={totalItems}
+              pageSize={paginationState.itemsPerPage}
+              onChange={handlePagination}
+              showTotal={total => `Total ${total} open tickets`}
+            />
             <JhiPagination
               activePage={paginationState.activePage}
               onSelect={handlePagination}

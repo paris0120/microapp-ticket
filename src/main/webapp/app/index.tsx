@@ -10,6 +10,8 @@ import { clearAuthentication } from 'app/shared/reducers/authentication';
 import ErrorBoundary from 'app/shared/error/error-boundary';
 import AppComponent from 'app/app';
 import { loadIcons } from 'app/config/icon-loader';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 
 const store = getStore();
 registerLocale(store);
@@ -22,6 +24,8 @@ loadIcons();
 const rootEl = document.getElementById('root');
 const root = createRoot(rootEl);
 
+TimeAgo.addDefaultLocale(en);
+const timeAgo = new TimeAgo('en-US');
 const render = Component =>
   root.render(
     <ErrorBoundary>

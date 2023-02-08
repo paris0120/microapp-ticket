@@ -43,10 +43,6 @@ public class TicketType implements Serializable {
     private String description;
 
     @NotNull(message = "must not be null")
-    @Column("parent_type")
-    private String parentType;
-
-    @NotNull(message = "must not be null")
     @Column("is_active")
     private Boolean isActive;
 
@@ -154,19 +150,6 @@ public class TicketType implements Serializable {
         this.description = description;
     }
 
-    public String getParentType() {
-        return this.parentType;
-    }
-
-    public TicketType parentType(String parentType) {
-        this.setParentType(parentType);
-        return this;
-    }
-
-    public void setParentType(String parentType) {
-        this.parentType = parentType;
-    }
-
     public Boolean getIsActive() {
         return this.isActive;
     }
@@ -249,7 +232,6 @@ public class TicketType implements Serializable {
             ", color='" + getColor() + "'" +
             ", icon='" + getIcon() + "'" +
             ", description='" + getDescription() + "'" +
-            ", parentType='" + getParentType() + "'" +
             ", isActive='" + getIsActive() + "'" +
             ", created='" + getCreated() + "'" +
             ", modified='" + getModified() + "'" +

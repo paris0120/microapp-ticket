@@ -17,7 +17,6 @@ public class TicketTypeSqlHelper {
         columns.add(Column.aliased("color", table, columnPrefix + "_color"));
         columns.add(Column.aliased("icon", table, columnPrefix + "_icon"));
         columns.add(Column.aliased("description", table, columnPrefix + "_description"));
-        columns.add(Column.aliased("parent_type", table, columnPrefix + "_parent_type"));
         columns.add(Column.aliased("is_active", table, columnPrefix + "_is_active"));
         columns.add(Column.aliased("created", table, columnPrefix + "_created"));
         columns.add(Column.aliased("modified", table, columnPrefix + "_modified"));

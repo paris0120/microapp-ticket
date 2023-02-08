@@ -2,14 +2,15 @@ package microapp.ticket.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.Instant;
+import java.util.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import microapp.ticket.repository.TicketRepository;
+import microapp.ticket.security.SecurityUtils;
+import microapp.ticket.service.TicketPriorityService;
 import microapp.ticket.service.TicketService;
+import microapp.ticket.service.TicketTypeService;
 import microapp.ticket.service.dto.TicketDTO;
 import microapp.ticket.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
@@ -50,9 +51,20 @@ public class TicketResource {
 
     private final TicketRepository ticketRepository;
 
-    public TicketResource(TicketService ticketService, TicketRepository ticketRepository) {
+    private final TicketTypeService ticketTypeService;
+
+    private final TicketPriorityService ticketPriorityService;
+
+    public TicketResource(
+        TicketService ticketService,
+        TicketRepository ticketRepository,
+        TicketTypeService ticketTypeService,
+        TicketPriorityService ticketPriorityService
+    ) {
         this.ticketService = ticketService;
         this.ticketRepository = ticketRepository;
+        this.ticketTypeService = ticketTypeService;
+        this.ticketPriorityService = ticketPriorityService;
     }
 
     /**
@@ -155,7 +167,7 @@ public class TicketResource {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
-                Mono<TicketDTO> result = ticketService.partialUpdate(ticketDTO);
+                Mono<TicketDTO> result = ticketService.update(ticketDTO);
 
                 return result
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
@@ -178,12 +190,13 @@ public class TicketResource {
     @GetMapping("/tickets")
     public Mono<ResponseEntity<List<TicketDTO>>> getAllTickets(
         @org.springdoc.api.annotations.ParameterObject Pageable pageable,
+        @RequestParam(name = "status", defaultValue = "open") String status,
         ServerHttpRequest request
     ) {
         log.debug("REST request to get a page of Tickets");
         return ticketService
             .countAll()
-            .zipWith(ticketService.findAll(pageable).collectList())
+            .zipWith(ticketService.findAllMy(status, pageable).collectList())
             .map(countWithEntities ->
                 ResponseEntity
                     .ok()

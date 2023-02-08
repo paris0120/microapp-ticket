@@ -5,7 +5,7 @@ export interface ITicket {
   username?: string | null;
   userFirstName?: string | null;
   userLastName?: string | null;
-  userDisplayName?: string;
+  userDisplayName?: string | null;
   title?: string;
   content?: string;
   typeKey?: string;

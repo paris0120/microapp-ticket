@@ -154,16 +154,6 @@ export const TicketTypeUpdate = () => {
                 }}
               />
               <ValidatedField
-                label={translate('ticketApp.ticketTicketType.parentType')}
-                id="ticket-type-parentType"
-                name="parentType"
-                data-cy="parentType"
-                type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                }}
-              />
-              <ValidatedField
                 label={translate('ticketApp.ticketTicketType.isActive')}
                 id="ticket-type-isActive"
                 name="isActive"

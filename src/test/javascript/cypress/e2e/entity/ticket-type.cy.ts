@@ -16,14 +16,13 @@ describe('TicketType e2e test', () => {
   const username = Cypress.env('E2E_USERNAME') ?? 'user';
   const password = Cypress.env('E2E_PASSWORD') ?? 'user';
   const ticketTypeSample = {
-    key: 'ivory Phased Granite',
-    type: 'haptic monitor Home',
-    weight: 87027,
+    key: 'Tactics',
+    type: 'Key ivory Phased',
+    weight: 3986,
     description: 'Li4vZmFrZS1kYXRhL2Jsb2IvaGlwc3Rlci50eHQ=',
-    parentType: 'cyan',
-    isActive: false,
-    created: '2023-02-01T11:42:30.979Z',
-    modified: '2023-01-31T21:33:59.598Z',
+    isActive: true,
+    created: '2023-02-07T06:24:38.718Z',
+    modified: '2023-02-07T07:20:44.048Z',
   };
 
   let ticketType;
@@ -183,16 +182,14 @@ describe('TicketType e2e test', () => {
         .invoke('val')
         .should('match', new RegExp('../fake-data/blob/hipster.txt'));
 
-      cy.get(`[data-cy="parentType"]`).type('THX upward-trending').should('have.value', 'THX upward-trending');
-
       cy.get(`[data-cy="isActive"]`).should('not.be.checked');
       cy.get(`[data-cy="isActive"]`).click().should('be.checked');
 
-      cy.get(`[data-cy="created"]`).type('2023-01-31T20:43').blur().should('have.value', '2023-01-31T20:43');
+      cy.get(`[data-cy="created"]`).type('2023-02-06T20:53').blur().should('have.value', '2023-02-06T20:53');
 
-      cy.get(`[data-cy="modified"]`).type('2023-02-01T02:06').blur().should('have.value', '2023-02-01T02:06');
+      cy.get(`[data-cy="modified"]`).type('2023-02-07T01:40').blur().should('have.value', '2023-02-07T01:40');
 
-      cy.get(`[data-cy="archived"]`).type('2023-02-01T03:31').blur().should('have.value', '2023-02-01T03:31');
+      cy.get(`[data-cy="archived"]`).type('2023-02-07T15:26').blur().should('have.value', '2023-02-07T15:26');
 
       cy.get(entityCreateSaveButtonSelector).click();
 

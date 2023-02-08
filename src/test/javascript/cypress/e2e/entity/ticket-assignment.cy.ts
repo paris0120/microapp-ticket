@@ -16,15 +16,16 @@ describe('TicketAssignment e2e test', () => {
   const username = Cypress.env('E2E_USERNAME') ?? 'user';
   const password = Cypress.env('E2E_PASSWORD') ?? 'user';
   const ticketAssignmentSample = {
-    issueId: 99463,
-    issueUuid: '834738b9-79b6-4589-9d7d-71486584e97b',
-    username: 'transmitting',
-    roleKey: 'Real',
-    roleWeight: 2574,
-    departmentKey: 'Web seize',
-    departmentWeight: 13561,
-    created: '2023-02-01T06:34:58.951Z',
-    modified: '2023-01-31T14:23:52.137Z',
+    issueId: 57742,
+    issueUuid: 'b65891d7-d714-4865-84e9-7b1ddb0a1a07',
+    username: 'withdrawal deploy value-added',
+    roleKey: 'Rubber Account Tuna',
+    roleWeight: 5975,
+    assignedByUsername: 'alarm withdrawal 1080p',
+    departmentKey: 'extensible hierarchy',
+    departmentWeight: 73022,
+    created: '2023-02-07T15:25:38.322Z',
+    modified: '2023-02-07T04:59:22.070Z',
   };
 
   let ticketAssignment;
@@ -182,21 +183,23 @@ describe('TicketAssignment e2e test', () => {
 
       cy.get(`[data-cy="roleWeight"]`).type('65163').should('have.value', '65163');
 
-      cy.get(`[data-cy="departmentKey"]`).type('distributed').should('have.value', 'distributed');
+      cy.get(`[data-cy="assignedByUsername"]`).type('distributed').should('have.value', 'distributed');
 
-      cy.get(`[data-cy="departmentWeight"]`).type('74744').should('have.value', '74744');
+      cy.get(`[data-cy="departmentKey"]`).type('Granite 1080p Designer').should('have.value', 'Granite 1080p Designer');
 
-      cy.get(`[data-cy="created"]`).type('2023-02-01T09:48').blur().should('have.value', '2023-02-01T09:48');
+      cy.get(`[data-cy="departmentWeight"]`).type('27570').should('have.value', '27570');
 
-      cy.get(`[data-cy="modified"]`).type('2023-02-01T00:15').blur().should('have.value', '2023-02-01T00:15');
+      cy.get(`[data-cy="created"]`).type('2023-02-07T05:51').blur().should('have.value', '2023-02-07T05:51');
 
-      cy.get(`[data-cy="accepted"]`).type('2023-02-01T11:10').blur().should('have.value', '2023-02-01T11:10');
+      cy.get(`[data-cy="modified"]`).type('2023-02-07T12:27').blur().should('have.value', '2023-02-07T12:27');
 
-      cy.get(`[data-cy="left"]`).type('2023-01-31T17:32').blur().should('have.value', '2023-01-31T17:32');
+      cy.get(`[data-cy="accepted"]`).type('2023-02-07T04:23').blur().should('have.value', '2023-02-07T04:23');
 
-      cy.get(`[data-cy="closed"]`).type('2023-01-31T18:30').blur().should('have.value', '2023-01-31T18:30');
+      cy.get(`[data-cy="left"]`).type('2023-02-07T00:25').blur().should('have.value', '2023-02-07T00:25');
 
-      cy.get(`[data-cy="archived"]`).type('2023-01-31T13:19').blur().should('have.value', '2023-01-31T13:19');
+      cy.get(`[data-cy="closed"]`).type('2023-02-07T02:43').blur().should('have.value', '2023-02-07T02:43');
+
+      cy.get(`[data-cy="archived"]`).type('2023-02-07T06:10').blur().should('have.value', '2023-02-07T06:10');
 
       cy.get(entityCreateSaveButtonSelector).click();
 

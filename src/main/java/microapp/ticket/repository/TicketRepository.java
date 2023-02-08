@@ -1,5 +1,6 @@
 package microapp.ticket.repository;
 
+import java.time.Instant;
 import microapp.ticket.domain.Ticket;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
@@ -16,6 +17,9 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface TicketRepository extends ReactiveCrudRepository<Ticket, Long>, TicketRepositoryInternal {
     Flux<Ticket> findAllBy(Pageable pageable);
+
+    Flux<Ticket> findAllByUsernameAndClosedIs(String username, Instant closed, Pageable pageable);
+    Flux<Ticket> findAllByUsernameAndClosedIsNotAndArchivedIs(String username, Instant closed, Instant archived, Pageable pageable);
 
     @Override
     <S extends Ticket> Mono<S> save(S entity);

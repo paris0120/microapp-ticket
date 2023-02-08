@@ -32,7 +32,6 @@ public class TicketTypeRowMapper implements BiFunction<Row, String, TicketType> 
         entity.setColor(converter.fromRow(row, prefix + "_color", String.class));
         entity.setIcon(converter.fromRow(row, prefix + "_icon", String.class));
         entity.setDescription(converter.fromRow(row, prefix + "_description", String.class));
-        entity.setParentType(converter.fromRow(row, prefix + "_parent_type", String.class));
         entity.setIsActive(converter.fromRow(row, prefix + "_is_active", Boolean.class));
         entity.setCreated(converter.fromRow(row, prefix + "_created", Instant.class));
         entity.setModified(converter.fromRow(row, prefix + "_modified", Instant.class));

@@ -43,12 +43,20 @@ public class TicketAssignment implements Serializable {
     private Integer roleWeight;
 
     @NotNull(message = "must not be null")
+    @Column("is_manager")
+    private Boolean isManager;
+
+    @NotNull(message = "must not be null")
     @Column("department_key")
     private String departmentKey;
 
     @NotNull(message = "must not be null")
     @Column("department_weight")
     private Integer departmentWeight;
+
+    @NotNull(message = "must not be null")
+    @Column("assigned_by_username")
+    private String assignedByUsername;
 
     @NotNull(message = "must not be null")
     @Column("created")
@@ -150,6 +158,19 @@ public class TicketAssignment implements Serializable {
         this.roleWeight = roleWeight;
     }
 
+    public Boolean getIsManager() {
+        return this.isManager;
+    }
+
+    public TicketAssignment isManager(Boolean isManager) {
+        this.setIsManager(isManager);
+        return this;
+    }
+
+    public void setIsManager(Boolean isManager) {
+        this.isManager = isManager;
+    }
+
     public String getDepartmentKey() {
         return this.departmentKey;
     }
@@ -174,6 +195,19 @@ public class TicketAssignment implements Serializable {
 
     public void setDepartmentWeight(Integer departmentWeight) {
         this.departmentWeight = departmentWeight;
+    }
+
+    public String getAssignedByUsername() {
+        return this.assignedByUsername;
+    }
+
+    public TicketAssignment assignedByUsername(String assignedByUsername) {
+        this.setAssignedByUsername(assignedByUsername);
+        return this;
+    }
+
+    public void setAssignedByUsername(String assignedByUsername) {
+        this.assignedByUsername = assignedByUsername;
     }
 
     public Instant getCreated() {
@@ -283,8 +317,10 @@ public class TicketAssignment implements Serializable {
             ", username='" + getUsername() + "'" +
             ", roleKey='" + getRoleKey() + "'" +
             ", roleWeight=" + getRoleWeight() +
+            ", isManager='" + getIsManager() + "'" +
             ", departmentKey='" + getDepartmentKey() + "'" +
             ", departmentWeight=" + getDepartmentWeight() +
+            ", assignedByUsername='" + getAssignedByUsername() + "'" +
             ", created='" + getCreated() + "'" +
             ", modified='" + getModified() + "'" +
             ", accepted='" + getAccepted() + "'" +
