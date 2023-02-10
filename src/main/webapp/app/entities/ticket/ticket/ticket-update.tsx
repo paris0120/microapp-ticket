@@ -63,7 +63,6 @@ export const TicketUpdate = () => {
 
   const [typeState, setTypeState] = useState(isNew ? new URLSearchParams(location.search).get('type') : ticketEntity.typeKey);
   const saveEntity = values => {
-    console.log(values);
     values.created = 0;
     values.modified = convertDateTimeToServer(values.modified);
     values.updated = convertDateTimeToServer(values.updated);

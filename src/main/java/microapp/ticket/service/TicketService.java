@@ -104,7 +104,7 @@ public class TicketService {
                 ticketDTO.setClosed(null);
                 ticketDTO.setArchived(null);
                 ticketDTO.setUuid(UUID.randomUUID());
-                return ticketRepository.save(ticketMapper.toEntity(ticketDTO)).map(ticketMapper::toDto);
+                return ticketRepository.save(ticketMapper.toEntity(ticketDTO)).map(ticketMapper::toDto).map(this::addObject);
             });
     }
 
@@ -158,7 +158,8 @@ public class TicketService {
                 return existingTicket;
             })
             .flatMap(ticketRepository::save)
-            .map(ticketMapper::toDto);
+            .map(ticketMapper::toDto)
+            .map(this::addObject);
     }
 
     public Mono<TicketDTO> manage(TicketDTO ticketDTO) {
@@ -172,7 +173,8 @@ public class TicketService {
                 return existingTicket;
             })
             .flatMap(ticketRepository::save)
-            .map(ticketMapper::toDto);
+            .map(ticketMapper::toDto)
+            .map(this::addObject);
     }
 
     private TicketDTO addObject(TicketDTO ticketDTO) {
@@ -208,7 +210,8 @@ public class TicketService {
                 .flatMapMany(username -> {
                     return ticketRepository
                         .findAllByUsernameAndClosedIsNotAndArchivedIs(username, null, null, pageable)
-                        .map(ticketMapper::toDto);
+                        .map(ticketMapper::toDto)
+                        .map(this::addObject);
                 });
         }
     }
@@ -222,7 +225,7 @@ public class TicketService {
     @Transactional(readOnly = true)
     public Flux<TicketDTO> findAllMyTickets(Pageable pageable) {
         log.debug("Request to get all Tickets");
-        return ticketRepository.findAllBy(pageable).map(ticketMapper::toDto);
+        return ticketRepository.findAllBy(pageable).map(ticketMapper::toDto).map(this::addObject);
     }
 
     /**
@@ -243,7 +246,7 @@ public class TicketService {
     @Transactional(readOnly = true)
     public Mono<TicketDTO> findOne(Long id) {
         log.debug("Request to get Ticket : {}", id);
-        return ticketRepository.findById(id).map(ticketMapper::toDto);
+        return ticketRepository.findById(id).map(ticketMapper::toDto).map(this::addObject);
     }
 
     /**

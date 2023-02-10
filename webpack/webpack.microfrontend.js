@@ -16,6 +16,11 @@ module.exports = ({ serve }) => {
         name: 'ticket',
         filename: 'remoteEntry.js',
         shareScope: 'default',
+        remotes: {
+          '@organization': `organization@/services/organization/remoteEntry.js`,
+          '@tag': `tag@/services/tag/remoteEntry.js`,
+          '@comment': `comment@/services/comment/remoteEntry.js`,
+        },
         exposes: {
           './entities-menu': './src/main/webapp/app/entities/menu',
           './entities-routes': './src/main/webapp/app/entities/routes',
