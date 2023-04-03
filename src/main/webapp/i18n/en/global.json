@@ -87,7 +87,7 @@
       "id": "ID"
     },
     "ribbon": {
-      "dev": "Development"
+      "dev": "Micro App"
     },
     "item-count": "Showing {{first}} - {{second}} of {{total}} items."
   },

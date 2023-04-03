@@ -13,7 +13,7 @@ import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateT
 import TimeAgo from 'javascript-time-ago';
 import { IconName } from '@fortawesome/fontawesome-common-types';
 
-const CommentEntitiesMenuItems = React.lazy(() => import('@comment/entities-menu').catch(() => import('app/shared/error/error-loading')));
+const CommentEntitiesMenuItems = React.lazy(() => import('@tag/entities-routes').catch(() => import('app/shared/error/error-loading')));
 
 export const TicketDetail = () => {
   const dispatch = useAppDispatch();

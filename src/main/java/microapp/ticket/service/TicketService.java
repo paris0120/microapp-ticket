@@ -256,6 +256,8 @@ public class TicketService {
      * @return a Mono to signal the deletion
      */
     public Mono<Void> delete(Long id) {
+        NamedContextFactory.Specification<Ticket> spec = null;
+
         log.debug("Request to delete Ticket : {}", id);
         return ticketRepository.deleteById(id);
     }

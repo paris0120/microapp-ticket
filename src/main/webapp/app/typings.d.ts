@@ -17,3 +17,13 @@ declare module '@comment/entities-menu' {
   const _default: () => JSX.Element;
   export default _default;
 }
+
+declare module '@tag/entities-menu' {
+  const _default: () => JSX.Element;
+  export default _default;
+}
+
+declare module '@tag/entities-routes' {
+  const _default: () => JSX.Element;
+  export default _default;
+}
